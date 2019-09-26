@@ -1,31 +1,30 @@
 package github
 
 import (
-	"fmt"
 	"net/http"
 	"regexp"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/noonleen/namechecker"
 )
 
 type Github struct {
 }
 
-func (t *Github) IsAvailable(username string) (bool, error) {
+func (t *Github) IsAvailable(username string, client namechecker.Client) (bool, error) {
 
-	resp, err := http.Get("https://github.com/" + username)
+	resp, err := client.Get("https://github.com/" + username)
 	if err != nil {
-		fmt.Println("Erreur réseau")
-		return false, err
+		errnp := namechecker.ErrNetworkProblem{Cause: err}
+		return false, &errnp
 	}
 	resp.Body.Close()
 
 	if resp.StatusCode == http.StatusNotFound {
 		return true, nil
-	} else {
-		return false, nil
 	}
-
+	return false, nil
 }
 
 // min length = 1
