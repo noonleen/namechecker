@@ -20,5 +20,5 @@ type Client interface {
 
 type NameChecker interface {
 	Validate(string) bool
-	IsAvailable(string, Client)
+	IsAvailable(string, Client) (bool, error)
 }
